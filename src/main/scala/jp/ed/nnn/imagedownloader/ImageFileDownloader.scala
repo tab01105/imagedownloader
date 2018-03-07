@@ -4,6 +4,7 @@ import java.io.{File, IOException}
 import java.nio.file.{Files, Paths, StandardOpenOption}
 
 import akka.actor.{Actor, ActorRef}
+import akka.dispatch.{BoundedMessageQueueSemantics, RequiresMessageQueue}
 import okhttp3._
 
 import scala.util.{Failure, Success, Try}
@@ -13,7 +14,7 @@ class DownloadFailException extends IOException
 class ImageFileDownloader(config: Config,
                           client: OkHttpClient,
                           wnidWordMap: Map[String, String]
-                         ) extends Actor {
+                         ) extends Actor with RequiresMessageQueue[BoundedMessageQueueSemantics] {
 
   val jpegMediaType = MediaType.parse("image/jpeg")
   var originalSender = Actor.noSender
